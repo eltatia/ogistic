@@ -8,4 +8,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Ejecutar un script
-        run: echo "¡Hola, GitHub Actions!"
+        run: echo "¡Hola, GitHub Actions bienvenido!"
