@@ -1,0 +1,39 @@
+# .github/workflows/validacion.yml
+name: Validación de HTML y CSS
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    name: Validar HTML & CSS
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Instalar validador de HTML
+      run: |
+        npm install -g html-validator-cli
+
+    - name: Validar HTML
+      run: |
+        html-validator --file=index.html --verbose
+
+    - name: Validar CSS (sintaxis básica con grep)
+      run: |
+        echo "Validando estilo en css/styles.css..."
+        if grep -q '{' css/styles.css; then
+          echo "✅ El archivo CSS parece válido sintácticamente."
+        else
+          echo "❌ El archivo CSS no tiene bloques válidos." && exit 1
+        fi
