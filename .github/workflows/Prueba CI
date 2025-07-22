@@ -1,0 +1,39 @@
+name: PruebaCI
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  verificar-archivos:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔄 Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: 📁 Mostrar estructura del proyecto
+        run: |
+          echo "Listado completo del proyecto:"
+          tree -L 2 || ls -R
+
+      - name: 🔍 Verificar existencia de archivos clave
+        run: |
+          echo "::group::Validación de archivos requeridos"
+          test -f index.html && echo "✅ index.html existe" || (echo "❌ index.html NO existe" && exit 1)
+          test -f css/styles.css && echo "✅ styles.css existe" || echo "⚠️ styles.css NO encontrado (opcional)"
+          test -f js/script.js && echo "✅ script.js existe" || echo "⚠️ script.js NO encontrado (opcional)"
+          echo "::endgroup::"
+
+      - name: 🧪 Mostrar primeras líneas de index.html
+        if: success()
+        run: |
+          echo "::group::Contenido inicial de index.html"
+          head -n 10 index.html
+          echo "::endgroup::"
+
+      - name: ✅ Confirmación final
+        run: echo "✔️ Todos los archivos clave verificados correctamente."
